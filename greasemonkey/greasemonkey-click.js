@@ -6,12 +6,14 @@
 // @author       You
 // @match        http://localhost:8080/?sheetId=https%3A%2F%2Fdocs.google.com%2Fspreadsheets%2Fd%2F1yYXaC-IFuHHllkGY0ZWOHwx49Im0unfpWjDWUWeuFds%2Fedit%23gid%3D0
 // @grant        none
+// @require http://code.jquery.com/jquery-3.3.1.min.js
 // ==/UserScript==
 
 var intervalId;
 var count = 1;
-// Zoom out a bit, to fit more on screen
-document.body.style.zoom = "90%";
+var id = "1";
+//Zoom out a bit, to fit more on screen
+document.body.style.zoom = "90%" ;
 (f = function() {
   // Quadrant selection every 30 seconds
   setTimeout(function() {
@@ -52,11 +54,23 @@ document.body.style.zoom = "90%";
 
   // Blip Item selection every 10 seconds
   intervalId = setInterval(function () {
-    let ind = Math.floor(Math.random() * length);
+
+    triggerEvent('mouseout', 'blip-link-'+id);
+
+    ind = Math.floor(Math.random() * length);
     $(classname).find('.blip-list-item')[ind].click();
+    textElem = $(classname).find('.blip-list-item')[ind]
+    elemid = $(textElem).attr('id');
+    id =  + elemid.split(/[- ]+/).pop();
+
+    triggerEvent('mouseover', 'blip-link-' + id);
+
   }, 1000)
 }) ();
 
-setTimeout(function() {
-
-}, 30000);
+function triggerEvent(eventType, id)
+{
+  var clickEvent = document.createEvent('MouseEvents');
+  clickEvent.initEvent (eventType, true, true);
+  document.getElementById(id).dispatchEvent(clickEvent);
+}
